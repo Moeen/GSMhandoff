@@ -2,11 +2,14 @@ package com.example.wifimanager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 public class connectiondetector 
 {
 	private Context _context;
+	public WifiInfo wifinfo;
 	public connectiondetector(Context context){
 		this._context = context;
+	
 	}
 	public boolean isConnectingToInternet(){
 		ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -23,5 +26,10 @@ public class connectiondetector
 		  }
 		  return false;
 	}
-
+	
+	public int  fetchWifiInfo()
+	{
+		return wifinfo.getLinkSpeed();
+	}
+	
 }

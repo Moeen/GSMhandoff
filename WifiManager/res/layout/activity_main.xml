@@ -8,18 +8,47 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    
-    
-     <TextView
-         android:id="@+id/textview1"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content" 
-         android:text="Detect Internet Status"/>
-      <Button android:id="@+id/btn_check"
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Check Internet Status"
-        android:layout_centerInParent="true"/>
-   
+        android:text="Detect Internet Status" />
 
+    <Button
+        android:id="@+id/btn_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_link"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="38dp"
+        android:text="Check Internet Status" />
+
+    <Button
+        android:id="@+id/btn_strength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_link"
+        android:layout_alignLeft="@+id/btn_link"
+        android:layout_alignRight="@+id/btn_check"
+        android:text="Check Wifi Signal Strength" />
+
+    <Button
+        android:id="@+id/btn_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_check"
+        android:layout_centerHorizontal="true"
+        android:text="Check Internet Speed" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_strength"
+        android:layout_alignLeft="@+id/btn_strength"
+        android:layout_alignRight="@+id/btn_link"
+        android:layout_below="@+id/textview1"
+        android:layout_marginTop="41dp"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 </RelativeLayout>

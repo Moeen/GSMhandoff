@@ -1,6 +1,7 @@
 package com.example.wifimanager;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,6 +9,8 @@ import android.content.DialogInterface;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -22,13 +25,34 @@ Boolean isInternetPresent = false;
 		setContentView(R.layout.activity_main);
 
 		Button btnStatus = (Button)findViewById(R.id.btn_check);
-
+        Button btnstrength =  (Button) findViewById(R.id.btn_strength); 
+        Button btnlink = (Button) findViewById(R.id.btn_link);
 		// creating connection detector class instance
 		cd = new connectiondetector(getApplicationContext());
 
 		/**
 		 * Check Internet status button click event
 		 * */
+		btnstrength.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+//				 TODO Auto-generated method stub
+				try
+				{
+					int strength = cd.fetchWifiInfo();
+					
+					//TextView txt = (TextView) findViewById(R.id.output);
+					//String testString = Integer.valueOf(strength).toString();
+					//txt.append("Hi");
+					//showAlertDialog(MainActivity.this,Integer.toString(strength), null, false);
+				}
+				catch(Exception ex)
+				{
+					showAlertDialog(MainActivity.this, ex.getMessage().toString(), null, false);
+				}
+			}
+		});
 		btnStatus.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -83,5 +107,8 @@ Boolean isInternetPresent = false;
 		// Showing Alert Message
 		alertDialog.show();
 	}
+ 
+	
 
+	
 }
