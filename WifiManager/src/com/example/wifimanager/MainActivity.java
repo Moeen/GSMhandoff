@@ -49,7 +49,25 @@ TextView textConnected, textIp, textSsid, textBssid, textMac, textSpeed, textRss
 	        
 	        this.registerReceiver(this.myWifiReceiver,
 	        		new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	        this.registerReceiver(this.myRssiChangeReceiver, new IntentFilter(WifiManager.RSSI_CHANGED_ACTION));
 	}
+	
+	
+	private BroadcastReceiver myRssiChangeReceiver = new BroadcastReceiver()
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			int newRssi = intent.getIntExtra(WifiManager.EXTRA_NEW_RSSI, 0);
+			  textRssi.setText(String.valueOf(newRssi));
+		}
+		
+	}	;
+	
+	
+	
+	
 	private BroadcastReceiver myWifiReceiver
  = new BroadcastReceiver(){
 
