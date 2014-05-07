@@ -1,114 +1,118 @@
 package com.example.wifimanager;
 
+import com.example.wifimanager.R;
+
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Debug;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
+import android.content.IntentFilter;
+
+import android.content.Intent;
+import android.util.Log;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	
 
 Boolean isInternetPresent = false;
-	
-	// Connection detector class
-	connectiondetector cd;
+private WifiInfo wifinfo;
+private ConnectivityManager connManager = null;
+private WifiManager wifiManager;
+private WifiInfo wifiInfo;
 
+// Connection detector class
+
+TextView textConnected, textIp, textSsid, textBssid, textMac, textSpeed, textRssi;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		Button btnStatus = (Button)findViewById(R.id.btn_check);
-        Button btnstrength =  (Button) findViewById(R.id.btn_strength); 
-        Button btnlink = (Button) findViewById(R.id.btn_link);
-		// creating connection detector class instance
-		cd = new connectiondetector(getApplicationContext());
-
-		/**
-		 * Check Internet status button click event
-		 * */
-		btnstrength.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-//				 TODO Auto-generated method stub
-				try
-				{
-					int strength = cd.fetchWifiInfo();
-					
-					//TextView txt = (TextView) findViewById(R.id.output);
-					//String testString = Integer.valueOf(strength).toString();
-					//txt.append("Hi");
-					//showAlertDialog(MainActivity.this,Integer.toString(strength), null, false);
-				}
-				catch(Exception ex)
-				{
-					showAlertDialog(MainActivity.this, ex.getMessage().toString(), null, false);
-				}
-			}
-		});
-		btnStatus.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				
-				// get Internet status
-				isInternetPresent = cd.isConnectingToInternet();
-
-				// check for Internet status
-				if (isInternetPresent) {
-					// Internet Connection is Present
-					// make HTTP requests
-					showAlertDialog(MainActivity.this, "Internet Connection",
-							"You have internet connection", true);
-				} else {
-					// Internet connection is not present
-					// Ask user to connect to Internet
-					showAlertDialog(MainActivity.this, "No Internet Connection",
-							"You don't have internet connection.", false);
-				}
-			}
-
-		});
-
+		 textConnected = (TextView)findViewById(R.id.Connected);
+	        textIp = (TextView)findViewById(R.id.Ip);
+	        
+	        textSsid = (TextView)findViewById(R.id.Ssid);
+	        textBssid = (TextView)findViewById(R.id.Bssid);
+	        textMac = (TextView)findViewById(R.id.Mac);
+	        textSpeed = (TextView)findViewById(R.id.Speed);
+	        textRssi = (TextView)findViewById(R.id.Rssi);
+	        
+	        DisplayWifiState();
+	        
+	        this.registerReceiver(this.myWifiReceiver,
+	        		new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
+	private BroadcastReceiver myWifiReceiver
+ = new BroadcastReceiver(){
 
-	/**
-	 * Function to display simple Alert Dialog
-	 * @param context - application context
-	 * @param title - alert dialog title
-	 * @param message - alert message
-	 * @param status - success/failure (used to set icon)
-	 * */
-	public void showAlertDialog(Context context, String title, String message, Boolean status) {
-		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-
-		// Setting Dialog Title
-		alertDialog.setTitle(title);
-
-		// Setting Dialog Message
-		alertDialog.setMessage(message);
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		// TODO Auto-generated method stub
+		NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+		if(networkInfo.getType() == ConnectivityManager.TYPE_WIFI){
+			DisplayWifiState();
+		}
 		
-		// Setting alert dialog icon
-		alertDialog.setIcon((status) ? R.drawable.ic_launcher : R.drawable.ic_launcher);
+	} };
+private void DisplayWifiState(){
+    	
+    	ConnectivityManager myConnManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+    	NetworkInfo myNetworkInfo = myConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    	WifiManager myWifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+		WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
+		
+		textMac.setText(myWifiInfo.getMacAddress());
+		
+    	if (myNetworkInfo.isConnected()){
+    		int myIp = myWifiInfo.getIpAddress();
+        
+    		textConnected.setText("--- CONNECTED ---");
+        
+    		int intMyIp3 = myIp/0x1000000;
+    		int intMyIp3mod = myIp%0x1000000;
+        
+    		int intMyIp2 = intMyIp3mod/0x10000;
+    		int intMyIp2mod = intMyIp3mod%0x10000;
+        
+    		int intMyIp1 = intMyIp2mod/0x100;
+    		int intMyIp0 = intMyIp2mod%0x100;
+        
+    		textIp.setText(String.valueOf(intMyIp0)
+    				+ "." + String.valueOf(intMyIp1)
+    				+ "." + String.valueOf(intMyIp2)
+    				+ "." + String.valueOf(intMyIp3)
+    				);
+        
+    		textSsid.setText(myWifiInfo.getSSID());
+    		textBssid.setText(myWifiInfo.getBSSID());
+    		
+    		textSpeed.setText(String.valueOf(myWifiInfo.getLinkSpeed()) + " " + WifiInfo.LINK_SPEED_UNITS);
+    		textRssi.setText(String.valueOf(myWifiInfo.getRssi()));
+    	}
+    	else{
+    		textConnected.setText("--- DIS-CONNECTED! ---");
+    		textIp.setText("---");
+    		textSsid.setText("---");
+    		textBssid.setText("---");
+    		textSpeed.setText("---");
+    		textRssi.setText("---");
+    	}
+    	
+    }
+		
+		
 
-		// Setting OK Button
-		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-
-		// Showing Alert Message
-		alertDialog.show();
-	}
- 
 	
-
-	
+	 
 }
+
+	
+

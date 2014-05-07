@@ -3,10 +3,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.util.Log;
 public class connectiondetector 
 {
 	private Context _context;
 	public WifiInfo wifinfo;
+	public WifiManager wifimanager;
 	public connectiondetector(Context context){
 		this._context = context;
 	
@@ -29,7 +32,9 @@ public class connectiondetector
 	
 	public int  fetchWifiInfo()
 	{
-		return wifinfo.getLinkSpeed();
+	     wifinfo = wifimanager.getConnectionInfo();
+		int i = wifinfo.getLinkSpeed();
+		return i;
 	}
 	
 }
