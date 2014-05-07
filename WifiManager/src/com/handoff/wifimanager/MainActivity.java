@@ -1,4 +1,4 @@
-package com.example.wifimanager;
+package com.handoff.wifimanager;
 
 import com.example.wifimanager.R;
 

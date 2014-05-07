@@ -1,4 +1,4 @@
-package com.example.wifimanager;
+package com.handoff.wifimanager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
